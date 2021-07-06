@@ -775,7 +775,14 @@ function Copy-DbaDatabase {
         }
 
         Invoke-SmoCheck -SqlInstance $sourceServer
-        $sourceNetBios = $sourceServer.ComputerName
+
+        # Try to fix #6600, but not sure which of DNSHostEntry, FQDN or FullComputerName would be the best to use.
+        try {
+            $sourceNetBios = (Resolve-DbaNetworkName -ComputerName $sourceServer.ComputerName -EnableException).FullComputerName
+        } catch {
+            $sourceNetBios = $sourceServer.ComputerName
+        }
+        Write-Message -Level Verbose -Message "Using $sourceNetBios as sourceNetBios."
 
         Write-Message -Level Verbose -Message "Ensuring user databases exist (counting databases)."
 
@@ -856,7 +863,13 @@ function Copy-DbaDatabase {
                 }
             }
 
-            $destNetBios = $destserver.ComputerName
+            # Try to fix #6600, but not sure which of DNSHostEntry, FQDN or FullComputerName would be the best to use.
+            try {
+                $destNetBios = (Resolve-DbaNetworkName -ComputerName $destserver.ComputerName -EnableException).FullComputerName
+            } catch {
+                $destNetBios = $destserver.ComputerName
+            }
+            Write-Message -Level Verbose -Message "Using $destNetBios as destNetBios."
 
             Write-Message -Level Verbose -Message "Performing SMO version check."
             Invoke-SmoCheck -SqlInstance $destServer

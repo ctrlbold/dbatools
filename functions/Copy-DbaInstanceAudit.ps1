@@ -185,9 +185,9 @@ function Copy-DbaInstanceAudit {
                     } else {
                         Write-Message -Level Verbose -Message "Force specified. Creating directory."
 
-                        $destNetBios = Resolve-NetBiosName $destServer
+                        $resolvedComputerName = Resolve-DbaComputerName -ComputerName $destServer
                         $root = $currentAudit.Filepath.Substring(0, 3)
-                        $rootUnc = Join-AdminUnc $destNetBios $root
+                        $rootUnc = Join-AdminUnc $resolvedComputerName $root
 
                         if ((Test-Path $rootUnc) -eq $true) {
                             if ($Pscmdlet.ShouldProcess($destinstance, "Creating directory $($currentAudit.Filepath)")) {

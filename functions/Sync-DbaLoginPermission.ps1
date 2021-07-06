@@ -106,7 +106,8 @@ function Sync-DbaLoginPermission {
                     continue
                 }
 
-                $serverName = Resolve-NetBiosName $sourceServer
+                # Here we don't need the FullComputerName, but only the maschine name to compare to the host part of the login name. So ComputerName should be fine.
+                $serverName = $sourceServer.ComputerName
                 $userBase = ($username.Split("\")[0]).ToLowerInvariant()
 
                 if ($serverName -eq $userBase -or $username.StartsWith("NT ")) {

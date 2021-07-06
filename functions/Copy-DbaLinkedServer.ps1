@@ -275,14 +275,13 @@ function Copy-DbaLinkedServer {
             Stop-Function -Message "Not a sysadmin on $source. Quitting." -Target $sourceServer
             return
         }
-        Write-Message -Level Verbose -Message "Getting NetBios name for $source."
-        $sourceNetBios = Resolve-NetBiosName $sourceserver
 
-        Write-Message -Level Verbose -Message "Checking if Remote Registry is enabled on $source."
+        Write-Message -Level Verbose -Message "Checking if Remote Registry is enabled on $Source."
+        $resolvedComputerName = Resolve-DbaComputerName -ComputerName $Source
         try {
-            Invoke-Command2 -Raw -Credential $Credential -ComputerName $sourceNetBios -ScriptBlock { Get-ItemProperty -Path "HKLM:\SOFTWARE\" } -ErrorAction Stop
+            $null = Invoke-Command2 -ComputerName $resolvedComputerName -ScriptBlock { Get-ItemProperty -Path "HKLM:\SOFTWARE\" }
         } catch {
-            Stop-Function -Message "Can't connect to registry on $source." -Target $sourceNetBios -ErrorRecord $_
+            Stop-Function -Message "Can't connect to registry on $Source." -Target $resolvedComputerName -ErrorRecord $_
             return
         }
     }

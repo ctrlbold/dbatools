@@ -50,7 +50,12 @@ function Remove-DbaAgDatabase {
     .EXAMPLE
         PS C:\> Remove-DbaAgDatabase -SqlInstance sqlserver2012 -AvailabilityGroup ag1, ag2 -Confirm:$false
 
-        Removes the ag1 and ag2 availability groups on sqlserver2012.  Does not prompt for confirmation.
+        Removes all databases from the ag1 and ag2 availability groups on sqlserver2012.  Does not prompt for confirmation.
+
+    .EXAMPLE
+        PS C:\> Remove-DbaAgDatabase -SqlInstance sqlserver2012 -AvailabilityGroup ag1 -Databsase pubs  -Confirm:$false
+
+        Removes the pubs database from the ag1 availability group on sqlserver2012.  Does not prompt for confirmation.
 
     .EXAMPLE
         PS C:\> Get-DbaAvailabilityGroup -SqlInstance sqlserver2012 -AvailabilityGroup availabilitygroup1 | Remove-DbaAgDatabase
